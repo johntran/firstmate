@@ -1,0 +1,45 @@
+# Reported case: 2 of 10 lanes, 10 cores, CI spike load1=12.5 load5=6.1
+== /proc/loadavg: 12.50 6.10 4.00 3/400 999  (cores via getconf: 10)
+-- base:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=12.50 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=75
+-- change:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=12.50 load5=6.10 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=0
+
+# Boundary: load5 exactly == cores holds
+== /proc/loadavg: 3.00 10.00 8.00 3/400 999  (cores via getconf: 10)
+-- base:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=3.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=0
+-- change:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=3.00 load5=10.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=75
+
+# Just under: load5 9.99 does not hold
+== /proc/loadavg: 14.00 9.99 8.00 3/400 999  (cores via getconf: 10)
+-- base:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=14.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=75
+-- change:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=14.00 load5=9.99 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=0
+
+# max-load1 still judged on load1 (config: 10 + max-load1 8), load1 9 load5 2
+== /proc/loadavg: 9.00 2.00 1.00 3/400 999  (cores via getconf: 10)
+-- base:
+capacity: free_lanes=0 reason=load lanes=2 target=10 secondmates=0 load1=9.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=75
+-- change:
+capacity: free_lanes=0 reason=load lanes=2 target=10 secondmates=0 load1=9.00 load5=2.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=75
+{"schema":"fm-lane-capacity.v1","pressure":{"load1":9,"runq_per_core":0.9},"limits":{"min_avail_gb":null,"min_disk_gb":null,"max_load1":8}}
+
+# max-load1 with load1 under but load5 over limit (load1 5, load5 9): no load hold
+== /proc/loadavg: 5.00 9.00 1.00 3/400 999  (cores via getconf: 10)
+-- base:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=5.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=0
+-- change:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=5.00 load5=9.00 cores=10 mem_free_pct=71 disk_free_mb=277220
+   --admit exit=0

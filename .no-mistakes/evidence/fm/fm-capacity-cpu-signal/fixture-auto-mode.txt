@@ -1,0 +1,17 @@
+# task metas aged (not young) so the cpu budget is not consumed by starting lanes
+== auto mode, /proc/loadavg: 12.50 6.10 4.00 3/400 999, cores 10
+-- base:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=12.50 cores=10 mem_free_pct=71 disk_free_mb=277216 mode=auto budget=2
+{"free_lanes":0,"reasons":["cpu: load 12.5 on 10 cores"]}
+-- change:
+capacity: free_lanes=2 reason=ok lanes=2 target=10 secondmates=0 load1=12.50 load5=6.10 cores=10 mem_free_pct=71 disk_free_mb=277216 mode=auto budget=4
+{"free_lanes":2,"reasons":[]}
+
+== auto mode, /proc/loadavg: 3.00 10.50 8.00 3/400 999, cores 10
+-- base:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=3.00 cores=10 mem_free_pct=71 disk_free_mb=277216 mode=auto budget=2
+{"free_lanes":0,"reasons":["cpu: load 10.5 of 8.5 usable on 10 cores, 0 starting, a lane needs 1 core"]}
+-- change:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=3.00 load5=10.50 cores=10 mem_free_pct=71 disk_free_mb=277216 mode=auto budget=2
+{"free_lanes":0,"reasons":["cpu: 5-minute load 10.5 on 10 cores"]}
+

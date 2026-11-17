@@ -1,0 +1,13 @@
+== sustained-load (now)  20:40:59  sysctl vm.loadavg: { 4.75 11.25 42.08 }
+-- base 427056c4:
+capacity: free_lanes=8 reason=ok lanes=2 target=10 secondmates=0 load1=4.75 cores=10 mem_free_pct=65 disk_free_mb=277242
+Lanes: 2 running of 10 target, 8 open.
+Host: load 4.75 on 10 cores, memory free 65%, disk free 277242 MB.
+-- change a30cce98:
+capacity: free_lanes=0 reason=cpu lanes=2 target=10 secondmates=0 load1=4.75 load5=11.25 cores=10 mem_free_pct=65 disk_free_mb=277242
+Lanes: 2 running of 10 target, 0 open.
+Host: load 4.75 (1 min), 11.25 (5 min) on 10 cores, memory free 65%, disk free 277242 MB.
+-- change --admit:
+exit=75
+-- change --json pressure/limits:
+{"schema":"fm-lane-capacity.v1","free_lanes":null,"reason":null,"pressure":{"basis":"probe","level":"warn","load1":4.75,"load5":null,"runq_per_core":0.47,"why":["5-minute load 11.25 on 10 cores"]},"limits":{"min_avail_gb":null,"min_disk_gb":null,"max_load1":null}}
